@@ -221,25 +221,7 @@ void UI::chat(HWND hwnd, float x, float y) {
                 ImVec2 btndp = ImVec2(pos.x + boxWidth + 8, pos.y + itemH - x * 0.02);
                 ImGui::SetCursorPos(btndp);
                 if (ImGui::Button(ICON_MD_DOWNLOAD, ImVec2(x * 0.02, x * 0.02))) {
-                    OPENFILENAMEW ofn;
-                    wchar_t szFile[MAX_PATH] = { 0 };
-                    std::wstring fileNameW(msgi.ras.begin(), msgi.ras.end());
-                    ZeroMemory(&ofn, sizeof(ofn));
-                    ofn.lStructSize = sizeof(ofn);
-                    ofn.hwndOwner = NULL;
-                    ofn.lpstrFile = szFile;
-                    wcscpy_s(szFile, fileNameW.c_str());
-                    ofn.nMaxFile = MAX_PATH;
-                    ofn.lpstrFilter = L"All Files\0*.*\0";
-                    ofn.nFilterIndex = 1;
-                    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-                    if (GetSaveFileNameW(&ofn)) {
-                        std::ofstream file(szFile, std::ios::binary);
-                        if (file.is_open()) {
-                            file.write(reinterpret_cast<const char*>(msgi.media64.data()), msgi.media64.size());
-                            file.close();
-                        }
-                    }
+                    
                 }
                 ImGui::SetCursorPos(ImVec2(btndp.x, btndp.y - x * 0.02 - 5));
                 if (ImGui::Button(ICON_FA_HEART, ImVec2(x * 0.02, x * 0.02))) {
@@ -260,25 +242,7 @@ void UI::chat(HWND hwnd, float x, float y) {
                 ImVec2 btndp = ImVec2(pos.x + hSize.x + 8, pos.y + itemH - x * 0.02);
                 ImGui::SetCursorPos(btndp);
                 if (ImGui::Button(ICON_FA_DOWNLOAD, ImVec2(x * 0.02, x * 0.02))) {
-                    OPENFILENAMEW ofn;
-                    wchar_t szFile[MAX_PATH] = { 0 };
-                    std::wstring fileNameW(msgi.ras.begin(), msgi.ras.end());
-                    ZeroMemory(&ofn, sizeof(ofn));
-                    ofn.lStructSize = sizeof(ofn);
-                    ofn.hwndOwner = NULL;
-                    ofn.lpstrFile = szFile;
-                    wcscpy_s(szFile, fileNameW.c_str());
-                    ofn.nMaxFile = MAX_PATH;
-                    ofn.lpstrFilter = L"All Files\0*.*\0";
-                    ofn.nFilterIndex = 1;
-                    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-                    if (GetSaveFileNameW(&ofn)) {
-                        std::ofstream file(szFile, std::ios::binary);
-                        if (file.is_open()) {
-                            file.write(reinterpret_cast<const char*>(msgi.media64.data()), msgi.media64.size());
-                            file.close();
-                        }
-                    }
+                    
                 }
                 ImGui::SetCursorPos(ImVec2(btndp.x, btndp.y - x * 0.02 - 5));
                 if (ImGui::Button(ICON_FA_HEART, ImVec2(x * 0.02, x * 0.02))) {
@@ -366,9 +330,7 @@ void UI::chat(HWND hwnd, float x, float y) {
             Message m;
             m.sender = u.name;
             m.time = M.getTime();
-            m.doc = true;
-            m.doci = dx.fileToBase64(ofn.lpstrFile);
-            m.ras = "document";
+            m.doc = true; 
             m.id = M.getIdMsg();
             m.uid = u.uid;
             i.sendMsg(1, m);

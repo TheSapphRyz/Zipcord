@@ -33,7 +33,7 @@ struct Message {
     int doci; // это userid_messageid и если надо скачать - запрос на сервер // название файла будет uid_mid
     int w;
     int h;
-    std::map<int, std::string> m; // rid (reaction id) и "Sosikust_Zyd" - это и те кто нажал, если ты там - кнопка другого цвета, и количество нажатий на нее
+    std::map<int, std::string> m; // rid (reaction id) и "Sosikust_Zyd" - это и те кто нажал, если ты там - кнопка другого цвета, количество нажатий на нее
 };
 struct Chat {
     std::string name;

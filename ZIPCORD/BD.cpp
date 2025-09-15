@@ -58,12 +58,8 @@ void BD::saveMSG(Message m) {
         sqlite3_bind_text(stmt, 3, m.time.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_int(stmt, 4, m.uid);
         sqlite3_bind_text(stmt, 5, m.media64.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_int(stmt, 6, m.isImage);
-        sqlite3_bind_int(stmt, 7, m.isVideo);
         sqlite3_bind_int(stmt, 8, m.isText);
         sqlite3_bind_int(stmt, 9, m.doc);
-        sqlite3_bind_text(stmt, 10, m.doci.c_str(), -1, SQLITE_STATIC);
-        sqlite3_bind_text(stmt, 11, m.ras.c_str(), -1, SQLITE_STATIC);
         sqlite3_bind_int(stmt, 12, m.w);
         sqlite3_bind_int(stmt, 13, m.h);
 
@@ -99,11 +95,8 @@ void BD::getMSGS(std::vector<Message>& msgs) {
             m.uid = sqlite3_column_int(stmt, 4);
             m.media64 = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
             m.isImage = sqlite3_column_int(stmt, 6);
-            m.isVideo = sqlite3_column_int(stmt, 7);
             m.isText = sqlite3_column_int(stmt, 8);
             m.doc = sqlite3_column_int(stmt, 9);
-            m.doci = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 10));
-            m.ras = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 11));
             m.w = sqlite3_column_int(stmt, 12);
             m.h = sqlite3_column_int(stmt, 13);
             msgs.push_back(m);
