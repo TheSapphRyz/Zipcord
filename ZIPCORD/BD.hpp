@@ -10,6 +10,7 @@ public:
 	std::string getava(int uid);
 	void updateavas();
 	void stop();
+	void exec(const std::string& sql);
 private:
 	static sqlite3* db;
 	static char* err;
