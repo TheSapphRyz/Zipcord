@@ -16,7 +16,6 @@ void BD::initdb() {
             uid INTEGER,
             media64 TEXT,
             isImage BOOLEAN,
-            isVideo BOOLEAN,
             isText BOOLEAN,
             doc BOOLEAN,
             doci TEXT,

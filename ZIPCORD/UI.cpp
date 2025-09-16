@@ -285,17 +285,24 @@ void UI::chat(HWND hwnd, float x, float y) {
 
     ImGui::EndChild();
 
-    //ImGui::SetCursorPos(ImVec2(x*0.403, y-80));
-    ImGui::SetCursorPosY(y - 80);
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.122, 0.129, 0.129, 1));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.122, 0.129, 0.129, 1));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.122, 0.129, 0.129, 1));
-    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.6, 0.667, 0.71, 1));
-    ImGui::PushItemWidth(x * 0.53);
-    if (ImGui::InputText("##Input", buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CtrlEnterForNewLine)) {
+    float inputPanelHeight = y*0.07; // Фиксированная высота панели
+    ImGui::SetCursorPos(ImVec2((x*0.6-x*0.46)/2, y - inputPanelHeight - 20.0f)); // Отступ 20 пикселей от края
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.125f, 0.133f, 0.145f, 1.0f));
+    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+    float baseFontSize = std::clamp(x * 0.015f, 12.0f, 24.0f);
+    float iconSize = baseFontSize * 1.5f; // Размер иконок кнопок
+    float spacing = 10.0f; // Отступ между кнопками
+
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
+    ImGui::SetNextItemWidth(x * 0.4);
+    if (ImGui::InputTextMultiline("##Input", buf, sizeof(buf), ImVec2(x*0.4, y*0.042), ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_EnterReturnsTrue)) {
         if (strlen(buf) > 0) {
             Message newMsg;
-            newMsg.text = std::string(buf);//xory.trim(std::string(buf));
+            newMsg.text = std::string(buf);
             newMsg.sender = u.name;
             newMsg.time = M.getTime();
             newMsg.isText = true;
@@ -303,20 +310,17 @@ void UI::chat(HWND hwnd, float x, float y) {
             newMsg.doc = false;
             newMsg.avaTexture = u.avaTexture;
             newMsg.uid = u.uid;
-            //newMsg.id = M.getIdMsg();
             msgs.push_back(newMsg);
             i.sendMsg(0, newMsg);
-            //memset(buf, 0, sizeof(buf));
             buf[0] = '\0';
         }
     }
+    ImGui::PopStyleColor(4);
 
     ImGui::SameLine();
-
-    if (ImGui::Button(ICON_MD_FILE_UPLOAD, ImVec2(x * 0.015, x * 0.015))) {
+    if (ImGui::Button(ICON_MD_FILE_UPLOAD, ImVec2(iconSize, iconSize))) {
         OPENFILENAMEW ofn;
         wchar_t szFile[MAX_PATH] = { 0 };
-
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = sizeof(ofn);
         ofn.hwndOwner = hwnd;
@@ -325,12 +329,11 @@ void UI::chat(HWND hwnd, float x, float y) {
         ofn.lpstrFilter = L"All Files\0*.*\0";
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
         if (GetOpenFileNameW(&ofn)) {
             Message m;
             m.sender = u.name;
             m.time = M.getTime();
-            m.doc = true; 
+            m.doc = true;
             m.id = M.getIdMsg();
             m.uid = u.uid;
             i.sendMsg(1, m);
@@ -338,11 +341,11 @@ void UI::chat(HWND hwnd, float x, float y) {
             msgs.push_back(std::move(m));
         }
     }
-    ImGui::SameLine();
-    if (ImGui::Button(ICON_MD_IMAGE_SEARCH, ImVec2(x * 0.015, x * 0.015))) {
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip(U8("Загрузить файл"));
+    ImGui::SameLine(0.0f, spacing);
+    if (ImGui::Button(ICON_MD_IMAGE_SEARCH, ImVec2(iconSize, iconSize))) {
         OPENFILENAMEW ofn;
         wchar_t szFile[MAX_PATH] = { 0 };
-
         ZeroMemory(&ofn, sizeof(ofn));
         ofn.lStructSize = sizeof(ofn);
         ofn.hwndOwner = hwnd;
@@ -351,7 +354,6 @@ void UI::chat(HWND hwnd, float x, float y) {
         ofn.lpstrFilter = L"Images\0*.jpg;*.jpeg;*.png;*.bmp\0All Files\0*.*\0";
         ofn.nFilterIndex = 1;
         ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
-
         if (GetOpenFileNameW(&ofn)) {
             Message m;
             m.sender = u.name;
@@ -366,7 +368,9 @@ void UI::chat(HWND hwnd, float x, float y) {
             msgs.push_back(std::move(m));
         }
     }
-    ImGui::PopStyleColor(4);
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip(U8("Загрузить изображение"));
+    ImGui::PopStyleColor();
+    ImGui::EndChild();
     ImGui::End();
 }
 

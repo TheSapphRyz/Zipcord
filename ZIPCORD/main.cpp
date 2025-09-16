@@ -114,7 +114,7 @@ int main() {
     ImGuiIO& io = ImGui::GetIO();
     float x, y;
     dx.getWS(hwnd, x, y);
-    float baseFontSize = x * 0.015;
+    float baseFontSize = y * 0.03;
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryTTF((void*)font_ttf, font_ttf_size, baseFontSize, nullptr, io.Fonts->GetGlyphRangesCyrillic());
     io.ConfigDebugHighlightIdConflicts = false;
@@ -124,13 +124,37 @@ int main() {
     icons_config.PixelSnapH = true;
     icons_config.GlyphMinAdvanceX = baseFontSize;
     io.Fonts->AddFontFromMemoryTTF((void*)fa6font, fa6font_size, baseFontSize, &icons_config, icons_ranges); //fa
-    io.Fonts->AddFontFromMemoryTTF((void*)googlefont, googlefont_size, baseFontSize, &icons_config, icons_ranges); /// google
+    io.Fonts->AddFontFromMemoryTTF((void*)googlefont, googlefont_size, baseFontSize*0.8, &icons_config, icons_ranges); /// google
     io.Fonts->AddFontFromMemoryTTF((void*)kenneyfont, kenneyfont_size, baseFontSize, &icons_config, icons_ranges); // kenney
     io.Fonts->AddFontFromMemoryTTF((void*)lucidefont, lucidefont_size, baseFontSize, &icons_config, icons_ranges); // lucide
     ImVec4 clear_color = ImVec4(0.173f, 0.184f, 0.2f, 1.00f);
     con_msgs.push_back("[INFO] Fonts Loaded");
     ImGuiStyle& style = ImGui::GetStyle();
-    style.PopupRounding = 10;
+    ImVec4* colors = style.Colors;
+    ImGui::StyleColorsDark();
+    //style.WindowRounding = 6.0f;
+    style.FrameRounding = 4.0f;
+    style.ChildRounding = 6.0f;
+    style.PopupRounding = 4.0f;
+    style.GrabRounding = 4.0f;
+    style.ScrollbarRounding = 6.0f;
+    style.WindowBorderSize = 1.0f;
+    style.ItemSpacing = ImVec2(8, 6);
+    style.FramePadding = ImVec2(10, 6);
+    style.ItemInnerSpacing = ImVec2(6, 4);
+    style.IndentSpacing = 20.0f;
+    style.FrameBorderSize = 0.0f;
+    style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+    style.WindowMenuButtonPosition = ImGuiDir_None;
+    style.ScrollbarSize = 10.0f; // Уменьшено для компактности
+    style.GrabMinSize = 8.0f;
+
+    colors[ImGuiCol_WindowBg] = ImVec4(0.1f, 0.1f, 0.1f, 1.0f); // Непрозрачный фон
+    colors[ImGuiCol_Button] = ImVec4(0.10f, 0.125f, 0.15f, 1.00f);
+    colors[ImGuiCol_ButtonHovered] = ImVec4(0.25f, 0.30f, 0.35f, 1.00f); // Более заметный ховер
+    colors[ImGuiCol_ButtonActive] = ImVec4(0.35f, 0.40f, 0.45f, 1.00f);
+    colors[ImGuiCol_FrameBg] = ImVec4(0.15f, 0.18f, 0.20f, 1.00f);
+    colors[ImGuiCol_Text] = ImVec4(0.9f, 0.9f, 0.9f, 1.0f); // Ярче текст
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     //io.ConfigInputTrickleEventQueue = true;   
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
