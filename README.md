@@ -1,5 +1,7 @@
 # Zipcord dev repo w source code
 
+realised versions sre in [Main Zipcord repo](https://github/TheSapphRyz/ZipcordForAll)
+
 ## Road map:
 * New colors
 * Replies
