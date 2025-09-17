@@ -1,6 +1,6 @@
-# Zipcord
+# Zipcord dev repo w source code
 
-##Road map:
+## Road map:
 * New colors
 * Replies
 * Languages
