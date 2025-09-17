@@ -288,12 +288,12 @@ void UI::chat(HWND hwnd, float x, float y) {
     float inputPanelHeight = y*0.07; // Фиксированная высота панели
     ImGui::SetCursorPos(ImVec2((x*0.6-x*0.46)/2, y - inputPanelHeight - 20.0f)); // Отступ 20 пикселей от края
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.125f, 0.133f, 0.145f, 1.0f));
-    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight+y*0.02), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     float baseFontSize = std::clamp(x * 0.015f, 12.0f, 24.0f);
     float iconSize = baseFontSize * 1.5f; // Размер иконок кнопок
     float spacing = 10.0f; // Отступ между кнопками
-
+    
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));

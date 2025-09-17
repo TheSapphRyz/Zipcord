@@ -55,6 +55,7 @@ void BD::initdb() {
                 doci INTEGER,
                 w INTEGER DEFAULT 0,
                 h INTEGER DEFAULT 0,
+                reply INTEGER,
                 FOREIGN KEY (cid) REFERENCES Chats(cid),
                 FOREIGN KEY (uid) REFERENCES Users(uid)
             );
@@ -82,8 +83,8 @@ void BD::initdb() {
 }
 void BD::saveMSG(Message m) {
     sqlite3_stmt* stmt;
-    const char* sql = "INSERT INTO Messages (cid, uid, text, sender, time, media64, isImage, isText, doc, doci, w, h) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const char* sql = "INSERT INTO Messages (cid, uid, text, sender, time, media64, isImage, isText, doc, doci, w, h, reply) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
         throw std::runtime_error("Failed to prepare statement: " + std::string(sqlite3_errmsg(db)));
     }
@@ -100,6 +101,7 @@ void BD::saveMSG(Message m) {
     sqlite3_bind_int(stmt, 10, m.doci);
     sqlite3_bind_int(stmt, 11, m.w);
     sqlite3_bind_int(stmt, 12, m.h);
+    sqlite3_bind_int(stmt, 13, m.reply);
 
     if (sqlite3_step(stmt) != SQLITE_DONE) {
         sqlite3_finalize(stmt);
@@ -126,7 +128,7 @@ void BD::saveMSG(Message m) {
 }
 void BD::getMSGS(std::vector<Message>& msgs) {
     msgs.clear();
-    const char* sql = "SELECT id, cid, uid, text, sender, time, media64, isImage, isText, doc, doci, w, h "
+    const char* sql = "SELECT id, cid, uid, text, sender, time, media64, isImage, isText, doc, doci, w, h, reply "
         "FROM Messages ORDER BY time ASC";
 
     sqlite3_stmt* stmt;
@@ -149,6 +151,7 @@ void BD::getMSGS(std::vector<Message>& msgs) {
         msg.doci = sqlite3_column_int(stmt, 10);
         msg.w = sqlite3_column_int(stmt, 11);
         msg.h = sqlite3_column_int(stmt, 12);
+        msg.reply = sqlite3_column_int(stmt, 13);
         msgs.push_back(msg);
     }
     sqlite3_finalize(stmt);

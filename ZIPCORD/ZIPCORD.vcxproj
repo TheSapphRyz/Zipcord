@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\..\..\Downloads\json.hpp" />
     <ClInclude Include="AudioProcessor.hpp" />
     <ClInclude Include="BD.hpp" />
+    <ClInclude Include="colors.hpp" />
     <ClInclude Include="DX.hpp" />
     <ClInclude Include="font1.h" />
     <ClInclude Include="font2.h" />
