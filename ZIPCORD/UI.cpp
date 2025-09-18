@@ -5,6 +5,8 @@
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx10.h"
+//#include "imgui_internal.h"
+//#include "imgui_stdlib.h"
 #include "main.h"
 #include <string>
 #include "IconsFontAwesome5.h"
@@ -213,7 +215,7 @@ void UI::chat(HWND hwnd, float x, float y) {
                 ImVec2 hSize = ImGui::CalcTextSize(header.c_str(), nullptr, false, x * 0.54f);
                 float boxWidth = (hSize.x > msgi.w ? hSize.x : msgi.w) + 20;
                 ImVec2 msgPos = ImVec2(pos.x + x * 0.015 + 8, pos.y);
-                draw_list->AddRectFilled(msgPos, ImVec2(msgPos.x + boxWidth - x * 0.015 - 8, msgPos.y + itemH - 5), ImGui::GetColorU32(ImGuiCol_ChildBg), 12.0f);
+                draw_list->AddRectFilled(msgPos, ImVec2(msgPos.x + boxWidth - x * 0.015 - 8, msgPos.y + itemH - 5), ImGui::GetColorU32(COLOR_MSG_BG), 12.0f);
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10));
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), header.c_str());
                 ImGui::Separator();
@@ -235,7 +237,7 @@ void UI::chat(HWND hwnd, float x, float y) {
                 ImVec2 hSize = ImGui::CalcTextSize(header.c_str(), nullptr, false, x * 0.54f);
 
                 ImVec2 msgPos = ImVec2(pos.x + x * 0.015 + 8, pos.y);
-                draw_list->AddRectFilled(msgPos, ImVec2(msgPos.x + hSize.x - x * 0.015 - 8, msgPos.y + itemH - 5), ImGui::GetColorU32(ImGuiCol_ChildBg), 12.0f);
+                draw_list->AddRectFilled(msgPos, ImVec2(msgPos.x + hSize.x - x * 0.015 - 8, msgPos.y + itemH - 5), ImGui::GetColorU32(COLOR_MSG_BG), 12.0f);
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10));
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), header.c_str());
                 ImGui::Separator();
@@ -266,13 +268,13 @@ void UI::chat(HWND hwnd, float x, float y) {
                 }
                 ImVec2 msgPos = ImVec2(pos.x + x * 0.015 + 8, pos.y);
                 ImVec2 msgRectEnd = ImVec2(msgPos.x + boxWidth, msgPos.y + itemH);
-                draw_list->AddRectFilled(msgPos, msgRectEnd, ImGui::GetColorU32(ImVec4(0.322, 0.322, 0.322, 1.0)), 12.0f);
+                draw_list->AddRectFilled(msgPos, msgRectEnd, ImGui::GetColorU32(COLOR_MSG_BG), 12.0f);
                 ImGui::SetCursorPos(ImVec2(msgPos.x + boxWidth, msgPos.y));
                 //if (ImGui::Button(ICON_FA_HEART, ImVec2(x * 0.02, x * 0.02))) {
 
                 //}
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10));
-                ImGui::TextColored(ImVec4(0.6, 0.667, 0.71, 1.0f), header.c_str());
+                ImGui::TextColored(COLOR_TEXT, header.c_str());
                 //ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10 + hSize.y + 2));
                 //ImGui::Separator();
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10 + hSize.y + 8));
@@ -285,10 +287,10 @@ void UI::chat(HWND hwnd, float x, float y) {
 
     ImGui::EndChild();
 
-    float inputPanelHeight = y*0.07; // Фиксированная высота панели
+    static float inputPanelHeight = y*0.07; // Фиксированная высота панели
     ImGui::SetCursorPos(ImVec2((x*0.6-x*0.46)/2, y - inputPanelHeight - 20.0f)); // Отступ 20 пикселей от края
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.125f, 0.133f, 0.145f, 1.0f));
-    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight+y*0.02), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight+y*0.01), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     float baseFontSize = std::clamp(x * 0.015f, 12.0f, 24.0f);
     float iconSize = baseFontSize * 1.5f; // Размер иконок кнопок
@@ -299,7 +301,7 @@ void UI::chat(HWND hwnd, float x, float y) {
     ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
     ImGui::SetNextItemWidth(x * 0.4);
-    if (ImGui::InputTextMultiline("##Input", buf, sizeof(buf), ImVec2(x*0.4, y*0.042), ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_EnterReturnsTrue)) {
+    if (ImGui::InputTextMultiline("##Input", buf, sizeof(buf), ImVec2(x*0.4, y * 0.042), ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_EnterReturnsTrue)) {
         if (strlen(buf) > 0) {
             Message newMsg;
             newMsg.text = std::string(buf);

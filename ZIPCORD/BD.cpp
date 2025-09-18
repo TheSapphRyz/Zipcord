@@ -55,7 +55,7 @@ void BD::initdb() {
                 doci INTEGER,
                 w INTEGER DEFAULT 0,
                 h INTEGER DEFAULT 0,
-                reply INTEGER,
+                reply INTEGER DEFAULT -1,
                 FOREIGN KEY (cid) REFERENCES Chats(cid),
                 FOREIGN KEY (uid) REFERENCES Users(uid)
             );

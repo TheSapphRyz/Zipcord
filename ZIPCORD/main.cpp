@@ -114,6 +114,8 @@ int main() {
     ImGuiIO& io = ImGui::GetIO();
     float x, y;
     dx.getWS(hwnd, x, y);
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplDX10_Init(g_pd3dDevice);
     float baseFontSize = y * 0.03;
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryTTF((void*)font_ttf, font_ttf_size, baseFontSize, nullptr, io.Fonts->GetGlyphRangesCyrillic());
@@ -158,10 +160,9 @@ int main() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     //io.ConfigInputTrickleEventQueue = true;   
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-    io.Fonts->Build();
+    //io.Fonts->Build();
+    //ImGui_ImplDX10_CreateDeviceObjects();
     ui.set_theme("default");
-    ImGui_ImplWin32_Init(hwnd);
-    ImGui_ImplDX10_Init(g_pd3dDevice);
     bool done = false;
     if (!g_pd3dDevice || !g_pSwapChain || !g_mainRenderTargetView) printf("P");
     while (!done) {

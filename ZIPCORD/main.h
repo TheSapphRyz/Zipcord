@@ -7,6 +7,7 @@
 #include "DX.hpp"
 #include "UI.hpp"
 #include "BD.hpp"
+#include "colors.hpp"
 #include <vector>
 
 #define SAMPLE_RATE 48000
