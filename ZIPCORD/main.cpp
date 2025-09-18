@@ -65,7 +65,7 @@ void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-std::vector<std::string> users_in_voice;
+std::vector<User> users_in_voice;
 std::vector<Message> msgs;
 std::vector<std::string>con_msgs;
 bool shouldRender = false;

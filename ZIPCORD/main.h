@@ -16,8 +16,6 @@
 #define STB_CH 4
 #define MAX_PACKET_SIZE 4000    
 
-extern std::vector<std::string> users_in_voice;
-
 struct Message {
     std::string text;
     std::string sender;
@@ -30,13 +28,16 @@ struct Message {
     ImTextureID mediaTexture;
     bool isImage;
     bool isText;
-    bool doc;
+    bool doc; 
     int doci; // это did и если надо скачать - запрос на сервер // название файла будет uid_mid
     int w;
     int h;
     int reply;
     std::map<int, std::string> m; // rid (reaction id) и "Sosikust_Zyd" - это и те кто нажал, если ты там - кнопка другого цвета, количество нажатий на нее
+
+    Message() = default;
 };
+
 struct Chat {
     std::string name;
     std::string ava64;
@@ -46,8 +47,8 @@ struct Chat {
     int cid;
     int par; // количество людей в группе
     bool ls_or_group;
-
 };
+
 struct User {
     std::string name;
     int uid;
@@ -58,6 +59,8 @@ struct User {
     bool logined;
     bool regged;
 };
+
+extern std::vector<User> users_in_voice;
 extern bool showTermsWindow;
 extern User u;
 extern std::vector<Message> msgs;
