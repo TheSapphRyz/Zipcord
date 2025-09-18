@@ -35,7 +35,6 @@ void BD::initdb() {
             CREATE TABLE IF NOT EXISTS Chats (
                 cid INTEGER PRIMARY KEY,
                 name TEXT NOT NULL,
-                last_msg_w_time TEXT,
                 um INTEGER DEFAULT 0,
                 par INTEGER DEFAULT 0,
                 ls_or_group INTEGER DEFAULT 0
@@ -76,10 +75,26 @@ void BD::initdb() {
                 FOREIGN KEY (user_id) REFERENCES Users(uid)
             );
 
+            CREATE TABLE IF NOT EXISTS lang (
+                l TEXT,
+                dev TEXT,
+                real TEXT,
+            );
+
             CREATE INDEX IF NOT EXISTS idx_messages_cid ON Messages(cid);
             CREATE INDEX IF NOT EXISTS idx_reactions_message_id ON Reactions(message_id);
         )";
     bd.exec(create_tables);
+}
+std::string BD::getT(std::string lang, std::string devcode) {
+    sqlite3_stmt* stmt;
+    const char* sql = "SELECT real FROM lang WHERE l = ?";
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
+        throw std::runtime_error("Failed to prepare avatar select: " + std::string(sqlite3_errmsg(db)));
+    }
+    sqlite3_bind_text(stmt, 1, lang.c_str(), -1, SQLITE_STATIC);
+    if (sqlite3_step(stmt) == SQLITE_ROW) return sqlite3_column_text(stmt, 0) ? reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0)) : "";
+    sqlite3_finalize(stmt);
 }
 void BD::saveMSG(Message m) {
     sqlite3_stmt* stmt;

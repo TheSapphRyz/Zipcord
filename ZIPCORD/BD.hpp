@@ -11,6 +11,7 @@ public:
 	void updateavas();
 	void stop();
 	void exec(const std::string& sql);
+	std::string getT(std::string lang, std::string devcode);
 private:
 	static sqlite3* db;
 	static char* err;

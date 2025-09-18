@@ -103,8 +103,8 @@ void UI::voicechat(HWND hwnd, float x, float y) {
         ImGui::Text(reinterpret_cast<const char*>(u8"войс чат"));
 
         if (users_in_voice.size() > 0) {
-            for (std::string i : users_in_voice) {
-                ImGui::Text(i.c_str());
+            for (User u : users_in_voice) {
+                ImGui::Text(u.name.c_str());
             }
         }
 
@@ -217,7 +217,9 @@ void UI::chat(HWND hwnd, float x, float y) {
                 ImVec2 msgPos = ImVec2(pos.x + x * 0.015 + 8, pos.y);
                 draw_list->AddRectFilled(msgPos, ImVec2(msgPos.x + boxWidth - x * 0.015 - 8, msgPos.y + itemH - 5), ImGui::GetColorU32(COLOR_MSG_BG), 12.0f);
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10));
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), header.c_str());
+                ImGui::SetWindowFontScale(0.8f);
+                ImGui::TextColored(COLOR_TEXT, header.c_str());
+                ImGui::SetWindowFontScale(1.0f);
                 ImGui::Separator();
                 ImGui::Image((ImTextureID)dx.CreateTextureFromMemory(g_pd3dDevice, xory.base64_decode(msgi.media64)), ImVec2(w, h));
                 ImVec2 btndp = ImVec2(pos.x + boxWidth + 8, pos.y + itemH - x * 0.02);
@@ -239,7 +241,9 @@ void UI::chat(HWND hwnd, float x, float y) {
                 ImVec2 msgPos = ImVec2(pos.x + x * 0.015 + 8, pos.y);
                 draw_list->AddRectFilled(msgPos, ImVec2(msgPos.x + hSize.x - x * 0.015 - 8, msgPos.y + itemH - 5), ImGui::GetColorU32(COLOR_MSG_BG), 12.0f);
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10));
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), header.c_str());
+                ImGui::SetWindowFontScale(0.8f);
+                ImGui::TextColored(COLOR_TEXT, header.c_str());
+                ImGui::SetWindowFontScale(1.0f);
                 ImGui::Separator();
                 ImVec2 btndp = ImVec2(pos.x + hSize.x + 8, pos.y + itemH - x * 0.02);
                 ImGui::SetCursorPos(btndp);
@@ -274,7 +278,9 @@ void UI::chat(HWND hwnd, float x, float y) {
 
                 //}
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10));
+                ImGui::SetWindowFontScale(0.8f);
                 ImGui::TextColored(COLOR_TEXT, header.c_str());
+                ImGui::SetWindowFontScale(1.0f);
                 //ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10 + hSize.y + 2));
                 //ImGui::Separator();
                 ImGui::SetCursorScreenPos(ImVec2(msgPos.x + 10, msgPos.y + 10 + hSize.y + 8));
