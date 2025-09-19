@@ -34,8 +34,6 @@ struct Message {
     int h;
     int reply;
     std::map<int, std::string> m; // rid (reaction id) и "Sosikust_Zyd" - это и те кто нажал, если ты там - кнопка другого цвета, количество нажатий на нее
-
-    Message() = default;
 };
 
 struct Chat {

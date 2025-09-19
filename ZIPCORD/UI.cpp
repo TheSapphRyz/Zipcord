@@ -28,6 +28,8 @@
 #include <regex>    
 #define U8(x) reinterpret_cast<const char*>(u8##x)
 static ImGui::MarkdownConfig mdConfig;
+
+
 void LinkCallback(ImGui::MarkdownLinkCallbackData data_)
 {
     std::string url(data_.link, data_.linkLength);
@@ -131,42 +133,6 @@ void SendNotification(const std::string& username) {
     printf("@ti");
 }
 
-// Функция для рендеринга colored и wrapped текста
-void RenderColoredWrappedText(const std::string& text, float wrapWidth) {
-    std::regex mention_regex(R"((?<=\s|^)@(\d+))");
-    std::sregex_iterator iter(text.begin(), text.end(), mention_regex);
-    std::sregex_iterator end;
-
-    std::vector<std::pair<size_t, size_t>> mention_positions;
-    for (; iter != end; ++iter) {
-        mention_positions.emplace_back(iter->position(), iter->length());
-    }
-
-    ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + wrapWidth);
-    size_t last_pos = 0;
-    for (const auto& pos : mention_positions) {
-        if (pos.first > last_pos) {
-            std::string normal_text = text.substr(last_pos, pos.first - last_pos);
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-            ImGui::TextUnformatted(normal_text.c_str());
-            ImGui::PopStyleColor();
-            ImGui::SameLine(0.0f, 0.0f);
-        }
-        std::string mention_text = text.substr(pos.first, pos.second);
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.5f, 1.0f, 1.0f));
-        ImGui::TextUnformatted(mention_text.c_str());
-        ImGui::PopStyleColor();
-        ImGui::SameLine(0.0f, 0.0f);
-        last_pos = pos.first + pos.second;
-    }
-    if (last_pos < text.length()) {
-        std::string normal_text = text.substr(last_pos);
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
-        ImGui::TextUnformatted(normal_text.c_str());
-        ImGui::PopStyleColor();
-    }
-    ImGui::PopTextWrapPos();
-}
 char UI::buf[10000];
 void UI::chat(HWND hwnd, float x, float y) {
     ImGui::Begin("Chat", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar);
@@ -292,11 +258,20 @@ void UI::chat(HWND hwnd, float x, float y) {
     }
 
     ImGui::EndChild();
+    ImVec2 textSize = ImGui::CalcTextSize(buf, nullptr, false, x * 0.4f);
+    float lineHeight = ImGui::GetTextLineHeightWithSpacing();
+    int lineCount = static_cast<int>(std::ceil(textSize.y / lineHeight));
 
-    static float inputPanelHeight = y*0.07; // Фиксированная высота панели
-    ImGui::SetCursorPos(ImVec2((x*0.6-x*0.46)/2, y - inputPanelHeight - 20.0f)); // Отступ 20 пикселей от края
+    // Ограничиваем максимальное количество строк (например, 5)
+    const int maxLines = 5;
+    lineCount = (((lineCount) < (maxLines)) ? (lineCount) : (maxLines));
+
+    // Вычисляем высоту InputText и панели
+    float InputHeight = lineCount * lineHeight + y*0.01;
+    float inputPanelHeight = InputHeight + y * 0.02f;
+    ImGui::SetCursorPos(ImVec2((x*0.6-x*0.46)/2, y - inputPanelHeight - y*0.04)); // Отступ 20 пикселей от края
     ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.125f, 0.133f, 0.145f, 1.0f));
-    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight+y*0.01), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::BeginChild("InputPanel", ImVec2(x * 0.46, inputPanelHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     float baseFontSize = std::clamp(x * 0.015f, 12.0f, 24.0f);
     float iconSize = baseFontSize * 1.5f; // Размер иконок кнопок
@@ -304,10 +279,11 @@ void UI::chat(HWND hwnd, float x, float y) {
     
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.161f, 0.169f, 0.184f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.161f, 0.169f, 0.184f, 1.0f)); 
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.0f, 0.0f, 0.0f, 1.0f));
     ImGui::SetNextItemWidth(x * 0.4);
-    if (ImGui::InputTextMultiline("##Input", buf, sizeof(buf), ImVec2(x*0.4, y * 0.042), ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_EnterReturnsTrue)) {
+
+    if (ImGui::InputTextMultiline("##Input", buf, sizeof(buf), ImVec2(x*0.4, InputHeight), ImGuiInputTextFlags_CtrlEnterForNewLine | ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_WordWrap)) {
         if (strlen(buf) > 0) {
             Message newMsg;
             newMsg.text = std::string(buf);
@@ -321,6 +297,8 @@ void UI::chat(HWND hwnd, float x, float y) {
             msgs.push_back(newMsg);
             i.sendMsg(0, newMsg);
             buf[0] = '\0';
+            inputPanelHeight = y * 0.07;
+            InputHeight = y * 0.042;
         }
     }
     ImGui::PopStyleColor(4);
@@ -384,19 +362,31 @@ void UI::chat(HWND hwnd, float x, float y) {
 
 
 void UI::console(HWND hwnd, float x, float y) {
+
+
 }
 char login[32];
 char ps[1000];
 bool showPassword;
 bool sogl;
 bool showTermsWindow;
+std::vector<std::string> mmmmmmm = {"test1", "teststtst", "sosikust", "ortembek", "fekabeka", "egokapoluzbeka", "oimjnrgtgpfjo", "mamazhirbana", "uzbeek", "papazhirbana01"};
 
 void UI::settingsw(HWND hwnd, float x, float y) {
     ImGui::Begin("settingsw", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar);
     ImGui::SetWindowSize(ImVec2(x * 0.4, y * 0.3));
     ImGui::SetWindowPos(ImVec2(0, y*0.7));
 
-    ImGui::Text(U8("тут настройки, потом сделаю"));
+    if(ImGui::BeginTable("##chatlist", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollY, ImVec2(x*0.37f, 0.0f), 0.5f)) {
+        for (std::string i : mmmmmmm) {
+            ImGui::Text(i.c_str());
+            if (mmmmmmm[-1] != i) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+            }
+        }
+        ImGui::EndTable();
+    }
 
     ImGui::End();
 }
