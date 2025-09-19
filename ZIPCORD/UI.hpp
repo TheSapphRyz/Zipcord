@@ -21,7 +21,6 @@ public:
     void acc(HWND hwnd, float x, float y);
     void react(HWND hwnd, float x, float y);
     void online(HWND hwnd, float x, float y);
-    void set_theme(std::string tm);
     void auth(HWND hwnd, float x, float y);
     void sogll();
 private:

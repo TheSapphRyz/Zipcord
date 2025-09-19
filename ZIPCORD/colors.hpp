@@ -11,3 +11,9 @@ const ImVec4 COLOR_LINK = ImVec4(0.314f, 0.427f, 1.0f, 1.0f); //                
 const ImVec4 COLOR_REACTION_ACTIVE = ImVec4(1.0f, 0.42f, 0.42f, 1.0f); // #FF6B6B
 const ImVec4 COLOR_REACTION_INACTIVE = ImVec4(0.69f, 0.75f, 0.77f, 1.0f); // #B0BEC5
 const ImVec4 COLOR_AVATAR_BORDER = ImVec4(0.58f, 0.46f, 0.80f, 1.0f); // #9575CD
+
+const ImVec4 COLOR_D_APP_BG = ImVec4(0.216f, 0.224f, 0.247f, 1.0f);
+const ImVec4 COLOR_D_INPUT = ImVec4();
+const ImVec4 COLOR_D_BTN = ImVec4();
+const ImVec4 COLOR_D_FRAME_BG = ImVec4();
+

@@ -23,61 +23,9 @@
 #include <shellapi.h>
 #pragma comment(lib, "comdlg32.lib")
 #include <commdlg.h>
-#include "imgui_markdown.h"
 #include <functional>
 #include <regex>    
 #define U8(x) reinterpret_cast<const char*>(u8##x)
-static ImGui::MarkdownConfig mdConfig;
-
-
-void LinkCallback(ImGui::MarkdownLinkCallbackData data_)
-{
-    std::string url(data_.link, data_.linkLength);
-    if (!data_.isImage)
-    {
-        ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
-    }
-}
-void ExampleMarkdownFormatCallback(const ImGui::MarkdownFormatInfo& markdownFormatInfo_, bool start_)
-{
-    // Call the default first so any settings can be overwritten by our implementation.
-    // Alternatively could be called or not called in a switch statement on a case by case basis.
-    // See defaultMarkdownFormatCallback definition for furhter examples of how to use it.
-    ImGui::defaultMarkdownFormatCallback(markdownFormatInfo_, start_);
-
-    switch (markdownFormatInfo_.type)
-    {
-        // example: change the colour of heading level 2
-    case ImGui::MarkdownFormatType::HEADING:
-    {
-        if (markdownFormatInfo_.level == 2)
-        {
-            if (start_){ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);}
-            else{ImGui::PopStyleColor();}
-        }
-        break;
-    }
-    default:
-    {
-        break;
-    }
-    }
-}
-void Markdown(const std::string& markdown_)
-{
-    // You can make your own Markdown function with your prefered string container and markdown config.
-    // > C++14 can use ImGui::MarkdownConfig mdConfig{ LinkCallback, NULL, ImageCallback, ICON_FA_LINK, { { H1, true }, { H2, true }, { H3, false } }, NULL };
-    mdConfig.linkCallback = LinkCallback;
-    mdConfig.tooltipCallback = NULL;
-    mdConfig.linkIcon = ICON_FA_LINK;
-    mdConfig.headingFormats[0] = { NULL, false }; // Отключаем заголовки
-    mdConfig.headingFormats[1] = { NULL, false };
-    mdConfig.headingFormats[2] = { NULL, false };
-
-    mdConfig.userData = NULL;
-    mdConfig.formatCallback = ExampleMarkdownFormatCallback;
-    ImGui::Markdown(markdown_.c_str(), markdown_.length(), mdConfig);
-}
 
 void UI::voicechat(HWND hwnd, float x, float y) {
     if (!u.invoice) {
@@ -90,8 +38,7 @@ void UI::voicechat(HWND hwnd, float x, float y) {
             i.Send({ {"type", "cv"}, {"name", u.name} });
             u.invoice = !u.invoice;
         }
-        //ImGui::Text("Users in voice chat: ");
-        Markdown(reinterpret_cast<const char*>(u8"Людей в войс чате: "));
+        ImGui::Text(U8("Людей в войс чате: "));
         ImGui::SameLine();
         ImGui::Text(std::to_string(users_in_voice.size()).c_str());
         ImGui::End();
@@ -597,74 +544,4 @@ void UI::react(HWND hwnd, float x, float y) {
 }
 void UI::online(HWND hwnd, float x, float y) {
 
-}
-
-std::map<std::string, ImVec4> th_da = { {"btn", ImVec4(0.322f, 0.322f, 0.322f, 1.0f)}, {"window", ImVec4(0.173f, 0.184f, 0.2f, 1.0f)}, {"title", ImVec4(0.137f, 0.153f, 0.165f, 1.0f)}, {"border", ImVec4(0.137f, 0.153f, 0.165f, 1.0f)}, {"inputtext", ImVec4(0.322f, 0.322f, 0.322f, 1.0f)} }; // fix
-std::map<std::string, ImVec4> th_de = { {"btn", ImVec4(0.173f, 0.184f, 0.2f, 1.0f)}, {"window", ImVec4(0.173f, 0.184f, 0.2f, 1.0f)}, {"title", ImVec4(0.137f, 0.153f, 0.165f, 1.0f)}, {"border", ImVec4(0.137f, 0.153f, 0.165f, 1.0f)}, {"inputtext", ImVec4(0.322, 0.322, 0.322, 1.0)} };
-std::map<std::string, ImVec4> th_li = { {"btn", ImVec4(0.941f, 0.941f, 0.941f, 1.0f)}, {"window", ImVec4(1, 1, 1, 1.0f)}, {"title", ImVec4(1, 1, 1, 1.0f)}, {"border", ImVec4(0.984, 0.973, 1, 1.0f)}, {"inputtext", ImVec4(0.82, 0.82, 0.82, 1.0)}, {"text", ImVec4(0.0, 0.0, 0.0, 1.0f)} };
-std::map<std::string, ImVec4> th_x_ = { {"btn", ImVec4(0.302f, 0.302f, 0.302f, 1.0f)}, {"window", ImVec4(0.0, 0.0, 0.0, 1.0f)}, {"title", ImVec4(0.271, 0.271, 0.271, 1.0f)}, {"border", ImVec4(1.0, 1.0, 1.0, 1.0f)}, {"inputtext", ImVec4(0.137, 0.161, 0.188, 1.0)}, {"text", ImVec4(0.0, 0.0, 0.0, 1.0f)}, {"btn_li", ImVec4(0.878, 0.878, 0.878, 1.0)} };
-std::map<std::string, ImVec4> th_rb = { {"btn", ImVec4(0.929f, 0.0f, 1.0f, 1.0f)}, {"window", ImVec4(1, 0.325, 0.918, 1.0f)}, {"title", ImVec4(0.984, 0.757, 1, 1.0f)}, {"border", ImVec4(1, 0, 0.878, 1.0f)}, {"inputtext", ImVec4(0.788, 0.024, 0.718, 1.0)} };
-std::map<std::string, ImVec4> th_pu = { {"btn", ImVec4(0.518f, 0.271f, 0.91f, 1.0f)}, {"window", ImVec4(0.455, 0, 0.62, 1.0f)}, {"title", ImVec4(0.827, 0.518, 0.941, 1.0f)}, {"border", ImVec4(0.392, 0.18, 0.471, 1.0f)}, {"inputtext", ImVec4(0.482, 0.255, 0.678, 1.0)} };
-
-
-void UI::set_theme(std::string tm) {
-    ImGuiStyle& style = ImGui::GetStyle();
-    if (tm == "default") {
-        style.Colors[ImGuiCol_Border] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-        style.Colors[ImGuiCol_WindowBg] = th_de["window"];
-        style.Colors[ImGuiCol_Button] = th_de["btn"];
-        style.Colors[ImGuiCol_FrameBg] = th_de["inputtext"];
-        style.Colors[ImGuiCol_TitleBgActive] = th_de["title"];
-        style.Colors[ImGuiCol_ButtonHovered] = th_x_["btn"];
-        style.Colors[ImGuiCol_ButtonActive] = th_x_["btn_li"];
-        style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-        style.Colors[ImGuiCol_ChildBg] = th_de["inputtext"];
-        std::cout << "Theme set to default" << std::endl;
-    }
-    else if (tm == "x") {
-        style.Colors[ImGuiCol_Border] = th_x_["border"];
-        style.Colors[ImGuiCol_WindowBg] = th_x_["window"];
-        style.Colors[ImGuiCol_FrameBg] = th_x_["inputtext"];
-        style.Colors[ImGuiCol_TitleBgActive] = th_x_["title"];
-        style.Colors[ImGuiCol_Button] = th_x_["btn"];
-        style.Colors[ImGuiCol_ButtonHovered] = th_x_["btn"];
-        style.Colors[ImGuiCol_ButtonActive] = th_x_["btn_li"];
-        style.Colors[ImGuiCol_Text] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-        std::cout << "Theme set to x" << std::endl;
-    }
-    else if (tm == "rb") {
-        style.Colors[ImGuiCol_Border] = th_rb["border"];
-        style.Colors[ImGuiCol_WindowBg] = th_rb["window"];
-        style.Colors[ImGuiCol_FrameBg] = th_rb["inputtext"];
-        style.Colors[ImGuiCol_TitleBgActive] = th_rb["title"];
-        style.Colors[ImGuiCol_Button] = th_rb["btn"];
-
-        std::cout << "Theme set to rb" << std::endl;
-    }
-    else if (tm == "light") {
-        style.Colors[ImGuiCol_Border] = th_li["border"];
-        style.Colors[ImGuiCol_WindowBg] = th_li["window"];
-        style.Colors[ImGuiCol_FrameBg] = th_li["inputtext"];
-        style.Colors[ImGuiCol_TitleBgActive] = th_li["title"];
-        style.Colors[ImGuiCol_Button] = th_li["btn"];
-        style.Colors[ImGuiCol_Text] = th_li["text"];
-        std::cout << "Theme set to light" << std::endl;
-    }
-    else if (tm == "dark") {
-        style.Colors[ImGuiCol_Border] = th_da["border"];
-        style.Colors[ImGuiCol_WindowBg] = th_da["window"];
-        style.Colors[ImGuiCol_FrameBg] = th_da["inputtext"];
-        style.Colors[ImGuiCol_TitleBgActive] = th_da["title"];
-        style.Colors[ImGuiCol_Button] = th_da["btn"];
-        std::cout << "Theme set to dark" << std::endl;
-    }
-    else if (tm == "purple") {
-        style.Colors[ImGuiCol_Border] = th_pu["border"];
-        style.Colors[ImGuiCol_WindowBg] = th_pu["window"];
-        style.Colors[ImGuiCol_FrameBg] = th_pu["inputtext"];
-        style.Colors[ImGuiCol_TitleBgActive] = th_pu["title"];
-        style.Colors[ImGuiCol_Button] = th_pu["btn"];
-        std::cout << "Theme set to purple" << std::endl;
-    }
-    shouldRender = true;
 }
